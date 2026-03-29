@@ -80,55 +80,58 @@ document.addEventListener('DOMContentLoaded', () => {
         
         conversationHistory.push({ role: "user", parts: [{ text: userMessage }] });
 
-        // gemma 모델은 system_instruction을 지원하지 않아서,
-        // 시스템 프롬프트를 대화 맨 앞에 user/model 첫 번째 턴으로 삽입합니다.
         const systemTurn = [
             { role: "user", parts: [{ text: `[시스템 설정] ${systemInstruction}` }] },
             { role: "model", parts: [{ text: "알겠어요! 저는 베리예요 🍓 어떻게 도와드릴까요?" }] }
         ];
 
-        const payload = {
-            contents: [...systemTurn, ...conversationHistory]
-        };
+        const payload = { contents: [...systemTurn, ...conversationHistory] };
+
+        // 사용 가능한 Gemma 모델 목록 (쿼터가 모델별로 독립 적용됨)
+        const models = [
+            "gemma-3-1b-it",
+            "gemma-3-4b-it",
+            "gemma-3-12b-it",
+            "gemma-3-27b-it"
+        ];
 
         let lastErrorMsg = "";
 
-        // 5개의 키를 모두 시도해봅니다 (진짜 돌려막기)
-        for (let attempt = 0; attempt < apiKeys.length; attempt++) {
-            const apiKey = apiKeys[currentKeyIndex];
-            currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+        // 모델 × 키 조합으로 최대 20회 시도 (4모델 × 5키)
+        for (let m = 0; m < models.length; m++) {
+            const model = models[(currentKeyIndex + m) % models.length];
+            for (let k = 0; k < apiKeys.length; k++) {
+                const apiKey = apiKeys[currentKeyIndex];
+                currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
 
-            // 모델은 가장 지원이 원활한 gemini-2.0-flash 와 gemini-flash-latest 중 선택 가능합니다.
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-4b-it:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-            try {
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
 
-                const data = await response.json();
+                    const data = await response.json();
 
-                if (response.ok) {
-                    const aiResponseText = data.candidates[0].content.parts[0].text;
-                    // 성공 시 반환
-                    conversationHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
-                    return aiResponseText;
-                } else {
-                    console.warn(`[Key Failed]`, data.error?.message);
-                    lastErrorMsg = data.error?.message || response.status;
-                    // 쿼터 초과나 오류 발생 시, 다음 루프(다음 키)로 넘어가서 자동 재시도
+                    if (response.ok) {
+                        conversationHistory.push({ role: "model", parts: [{ text: data.candidates[0].content.parts[0].text }] });
+                        return data.candidates[0].content.parts[0].text;
+                    } else {
+                        console.warn(`[${model} / key${k+1} 실패]`, data.error?.message);
+                        lastErrorMsg = data.error?.message || response.status;
+                        continue;
+                    }
+                } catch (error) {
+                    console.error("Network Error:", error);
+                    lastErrorMsg = "네트워크 오류";
                     continue;
                 }
-            } catch (error) {
-                console.error("Network Error:", error);
-                lastErrorMsg = "네트워크 오류";
-                continue;
             }
         }
 
-        // 5개의 키가 모두 한도 초과(Quota exceeded) 등으로 실패한 경우
+        // 모든 모델 × 키 조합이 실패한 경우
         conversationHistory.pop();
         showQuotaModal();
         return null;
