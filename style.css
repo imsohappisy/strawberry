@@ -480,3 +480,16 @@ body {
 .modal-btn:active {
     transform: translateY(0);
 }
+
+.modal-detail-error {
+    font-size: 0.7rem;
+    color: #a0aec0;
+    margin-bottom: 20px;
+    word-break: break-all;
+    background: #f7fafc;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    max-height: 60px;
+    overflow-y: auto;
+}

@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 모든 모델 × 키 조합이 실패한 경우
         conversationHistory.pop();
-        showQuotaModal();
+        showQuotaModal(lastErrorMsg);
         return null;
     }
 
@@ -168,7 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const quotaModal = document.getElementById('quota-modal');
     const modalCloseBtn = document.getElementById('modal-close-btn');
 
-    function showQuotaModal() {
+    function showQuotaModal(errorMsg) {
+        const errorElem = document.getElementById('modal-error-msg');
+        if (errorElem) {
+            errorElem.textContent = errorMsg ? `오류 상세: ${errorMsg}` : '';
+            errorElem.style.display = errorMsg ? 'block' : 'none';
+        }
         quotaModal.style.display = 'flex';
     }
 
