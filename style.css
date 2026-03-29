@@ -10,6 +10,22 @@
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(255, 255, 255, 0.5);
     --shadow: 0 8px 32px 0 rgba(255, 51, 102, 0.15);
+    --msg-bg-ai: white;
+    --input-bg: white;
+    --header-bg: rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] {
+    --bg-pink: #1a0b12;
+    --text-dark: #f7fafc;
+    --text-gray: #a0aec0;
+    --glass-bg: rgba(30, 20, 25, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --msg-bg-ai: #2d1b24;
+    --input-bg: #2d1b24;
+    --header-bg: rgba(20, 10, 15, 0.4);
+    --soft-pink: #3d1a25;
 }
 
 * {
@@ -106,8 +122,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--header-bg);
 }
 
 .ai-profile {
@@ -145,7 +161,7 @@ body {
     position: relative;
     font-size: 32px;
     z-index: 2;
-    background: white;
+    background: var(--msg-bg-ai);
     width: 46px;
     height: 46px;
     border-radius: 50%;
@@ -249,7 +265,7 @@ body {
 }
 
 .ai-message .message-content {
-    background: white;
+    background: var(--msg-bg-ai);
     color: var(--text-dark);
     border-bottom-left-radius: 4px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
@@ -316,7 +332,7 @@ body {
 .input-wrapper {
     display: flex;
     align-items: center;
-    background: white;
+    background: var(--input-bg);
     border-radius: 24px;
     padding: 6px 6px 6px 12px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -410,13 +426,13 @@ body {
 }
 
 .modal-box {
-    background: white;
+    background: var(--msg-bg-ai);
     border-radius: 28px;
     padding: 40px 36px;
     max-width: 320px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 20px 60px rgba(255, 51, 102, 0.2);
+    box-shadow: var(--shadow);
     animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -483,13 +499,13 @@ body {
 
 .modal-detail-error {
     font-size: 0.7rem;
-    color: #a0aec0;
+    color: var(--text-gray);
     margin-bottom: 20px;
     word-break: break-all;
-    background: #f7fafc;
+    background: var(--header-bg);
     padding: 8px;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--glass-border);
     max-height: 60px;
     overflow-y: auto;
 }
