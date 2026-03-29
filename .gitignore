@@ -1,0 +1,9 @@
+# API 키 파일 — 절대 GitHub에 올리지 않습니다
+config.js
+
+# 의존성
+node_modules/
+
+# OS 파일
+.DS_Store
+Thumbs.db
