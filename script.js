@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── 상수 ──────────────────────────────────────────────
     const MAX_HISTORY = 20;   // user+model 쌍 기준 10회 = 20개
-    const MAX_LEN = 300;      // [Fix] 20 → 300자로 실용적 상향
+    const MAX_LEN = 30;      // [Fix] 20 → 300자로 실용적 상향
     const MODELS = [
         'gemini-2.5-flash',
         'gemini-2.5-pro',
